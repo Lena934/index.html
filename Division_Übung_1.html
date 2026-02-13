@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Das Rechen-Labor: Schriftliches Dividieren</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #eef2f7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #game-container { background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; width: 450px; border: 3px solid #3498db; }
+        h1 { color: #2c3e50; margin-top: 0; }
+        .question { font-size: 2rem; margin: 1.5rem 0; color: #34495e; font-weight: bold; letter-spacing: 2px; }
+        input[type="number"] { width: 120px; padding: 10px; font-size: 1.5rem; border: 2px solid #bdc3c7; border-radius: 8px; text-align: center; outline: none; }
+        input[type="number"]:focus { border-color: #3498db; }
+        #check-btn { display: block; width: 100%; margin-top: 20px; padding: 15px; font-size: 1.2rem; background-color: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        #check-btn:hover { background-color: #219150; }
+        #check-btn:disabled { background-color: #95a5a6; cursor: not-allowed; }
+        #progress { color: #7f8c8d; font-weight: bold; margin-bottom: 10px; }
+        #feedback { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 1.1rem; }
+        .success { color: #27ae60; }
+        .error { color: #e74c3c; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="progress">Aufgabe 1 von 10</div>
+    <h1>Das Rechen-Labor 🔬</h1>
+    <div id="feedback"></div>
+    <div class="question" id="question-text">Lade...</div>
+    <input type="number" id="user-answer" placeholder="?" autocomplete="off">
+    <button id="check-btn">Ergebnis prüfen</button>
+</div>
+
+<script>
+    // Deine spezifischen Aufgaben
+    const tasks = [
+        { q: "815 : 5", a: 163 },
+        { q: "2008 : 8", a: 251 },
+        { q: "6801 : 3", a: 2267 },
+        { q: "4938 : 6", a: 823 },
+        { q: "588 : 7", a: 84 },
+        { q: "4050 : 9", a: 450 },
+        { q: "4926 : 6", a: 821 },
+        { q: "6004 : 4", a: 1501 },
+        { q: "2350 : 5", a: 470 },
+        { q: "4488 : 8", a: 561 }
+    ];
+
+    let currentIdx = 0;
+    const qText = document.getElementById('question-text');
+    const input = document.getElementById('user-answer');
+    const btn = document.getElementById('check-btn');
+    const feedback = document.getElementById('feedback');
+    const progress = document.getElementById('progress');
+
+    function loadTask() {
+        if (currentIdx >= tasks.length) {
+            document.getElementById('game-container').innerHTML = 
+                "<h1 style='color:#f1c40f'>GESCHAFFT! 🏆</h1>" +
+                "<p style='font-size:1.2rem'>Du hast alle 10 Rechen-Hürden genommen.</p>" +
+                "<div style='background:#f9f9f9; padding:20px; border:2px dashed #f1c40f; border-radius:10px;'>" +
+                "<strong>DEIN AUFTRAG:</strong><br>Gehe jetzt zum Lehrerpult und hol dir die goldene Expertenaufgabe!" +
+                "</div>";
+            return;
+        }
+        
+        qText.innerText = tasks[currentIdx].q + " =";
+        input.value = "";
+        input.focus();
+        progress.innerText = `Aufgabe ${currentIdx + 1} von 10`;
+        feedback.innerText = "";
+    }
+
+    function check() {
+        const userVal = parseInt(input.value);
+        const correctVal = tasks[currentIdx].a;
+
+        if (userVal === correctVal) {
+            feedback.className = "success";
+            feedback.innerText = "Hervorragend! Das ist richtig.";
+            currentIdx++;
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.disabled = false;
+                loadTask();
+            }, 1200);
+        } else {
+            feedback.className = "error";
+            feedback.innerText = "Leider falsch. Rechne noch einmal in Ruhe!";
+            
+            // "Bestrafung": Button für 3 Sekunden sperren
+            btn.disabled = true;
+            let timeLeft = 3;
+            const timer = setInterval(() => {
+                btn.innerText = `Wartezeit: ${timeLeft}s`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.innerText = "Ergebnis prüfen";
+                }
+            }, 1000);
+        }
+    }
+
+    btn.onclick = check;
+
+    // Erlaubt das Drücken der Enter-Taste zum Absenden
+    input.addEventListener("keyup", function(event) {
+        if (event.key === "Enter" && !btn.disabled) {
+            check();
+        }
+    });
+
+    loadTask();
+</script>
+
+</body>
+</html>
