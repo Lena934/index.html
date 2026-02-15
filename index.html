@@ -2,117 +2,116 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Das Rechen-Labor: Schriftliches Dividieren</title>
+    <title>Meine Zahlen-Werkstatt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #eef2f7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        #game-container { background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; width: 450px; border: 3px solid #3498db; }
-        h1 { color: #2c3e50; margin-top: 0; }
-        .question { font-size: 2rem; margin: 1.5rem 0; color: #34495e; font-weight: bold; letter-spacing: 2px; }
-        input[type="number"] { width: 120px; padding: 10px; font-size: 1.5rem; border: 2px solid #bdc3c7; border-radius: 8px; text-align: center; outline: none; }
-        input[type="number"]:focus { border-color: #3498db; }
-        #check-btn { display: block; width: 100%; margin-top: 20px; padding: 15px; font-size: 1.2rem; background-color: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        #check-btn:hover { background-color: #219150; }
-        #check-btn:disabled { background-color: #95a5a6; cursor: not-allowed; }
-        #progress { color: #7f8c8d; font-weight: bold; margin-bottom: 10px; }
-        #feedback { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 1.1rem; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        #game-container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 450px; border-top: 8px solid #5d6d7e; }
+        h1 { color: #34495e; font-size: 1.6rem; margin-bottom: 0.5rem; }
+        .subline { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .question { font-size: 2.2rem; margin: 1rem 0; color: #2c3e50; font-weight: bold; }
+        input[type="number"] { width: 140px; padding: 12px; font-size: 1.8rem; border: 2px solid #d6dbdf; border-radius: 8px; text-align: center; margin-bottom: 1rem; }
+        #check-btn { display: block; width: 100%; padding: 15px; font-size: 1.1rem; background-color: #5d6d7e; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+        #check-btn:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        #feedback { margin-top: 1rem; font-weight: 500; min-height: 1.5rem; }
+        #hint-box { margin-top: 1rem; padding: 10px; background-color: #fff9c4; border-left: 5px solid #fbc02d; border-radius: 4px; display: none; font-size: 0.95rem; text-align: left; color: #5d4037; }
         .success { color: #27ae60; }
         .error { color: #e74c3c; }
+        #progress-bar { height: 8px; background: #ecf0f1; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        #progress-fill { height: 100%; background: #5d6d7e; width: 0%; transition: width 0.4s; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div id="progress">Aufgabe 1 von 10</div>
-    <h1>Das Rechen-Labor 🔬</h1>
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <h1>Zahlen-Werkstatt 🛠️</h1>
+    <p class="subline">Schriftliches Dividieren meistern</p>
+    
     <div id="feedback"></div>
-    <div class="question" id="question-text">Lade...</div>
-    <input type="number" id="user-answer" placeholder="?" autocomplete="off">
-    <button id="check-btn">Ergebnis prüfen</button>
+    <div class="question" id="question-text">...</div>
+    <input type="number" id="user-answer" placeholder="Ergebnis" inputmode="numeric" pattern="[0-9]*">
+    <button id="check-btn">Prüfen</button>
+    <div id="hint-box" id="hint-text"></div>
 </div>
 
 <script>
-    // Deine spezifischen Aufgaben
     const tasks = [
-        { q: "815 : 5", a: 163 },
-        { q: "2008 : 8", a: 251 },
-        { q: "6801 : 3", a: 2267 },
-        { q: "4938 : 6", a: 823 },
-        { q: "588 : 7", a: 84 },
-        { q: "4050 : 9", a: 450 },
-        { q: "4926 : 6", a: 821 },
-        { q: "6004 : 4", a: 1501 },
-        { q: "2350 : 5", a: 470 },
-        { q: "4488 : 8", a: 561 }
+        { q: "815 : 5", a: 163, h: "Tipp: 8:5=1 Rest 3. Hol die 1 runter: 31:5=...?" },
+        { q: "2008 : 8", a: 251, h: "Tipp: 20:8=2 Rest 4. Hol die 0 runter: 40:8=5. Danach bleibt noch die 8!" },
+        { q: "6801 : 3", a: 2267, h: "Tipp: Gehe Stelle für Stelle vor. 6:3, dann 8:3 (Rest 2), dann 20:3, dann 21:3." },
+        { q: "4938 : 6", a: 823, h: "Tipp: 49:6=8 Rest 1. Hol die 3 runter für 13:6. Pass auf den Rest auf!" },
+        { q: "588 : 7", a: 84, h: "Tipp: Die 7 passt nicht in die 5, also rechne 58:7 zuerst." },
+        { q: "4050 : 9", a: 450, h: "Tipp: 40:9=4 Rest 4. Hol die 5 runter: 45:9=5. Vergiss die letzte Null nicht!" },
+        { q: "4926 : 6", a: 821, h: "Tipp: 49:6=8 Rest 1. Hol die 2 runter: 12:6=2. Am Ende noch 6:6." },
+        { q: "6004 : 4", a: 1501, h: "Tipp: 6:4=1 Rest 2. Hol die 0 runter: 20:4=5. Achtung: 0:4=0!" },
+        { q: "2350 : 5", a: 470, h: "Tipp: 23:5=4 Rest 3. Hol die 5 runter: 35:5=7. Die letzte Null muss auch ins Ergebnis." },
+        { q: "4488 : 8", a: 561, h: "Tipp: 44:8=5 Rest 4. Hol die 8 runter: 48:8=6. Zum Schluss noch 8:8." }
     ];
 
     let currentIdx = 0;
+    let wrongAttempts = 0;
     const qText = document.getElementById('question-text');
     const input = document.getElementById('user-answer');
     const btn = document.getElementById('check-btn');
     const feedback = document.getElementById('feedback');
-    const progress = document.getElementById('progress');
+    const hintBox = document.getElementById('hint-box');
+    const fill = document.getElementById('progress-fill');
 
     function loadTask() {
         if (currentIdx >= tasks.length) {
             document.getElementById('game-container').innerHTML = 
-                "<h1 style='color:#f1c40f'>GESCHAFFT! 🏆</h1>" +
-                "<p style='font-size:1.2rem'>Du hast alle 10 Rechen-Hürden genommen.</p>" +
-                "<div style='background:#f9f9f9; padding:20px; border:2px dashed #f1c40f; border-radius:10px;'>" +
-                "<strong>DEIN AUFTRAG:</strong><br>Gehe jetzt zum Lehrerpult und hol dir die goldene Expertenaufgabe!" +
+                "<h2>Werkstatt-Diplom erhalten! 📜</h2>" +
+                "<p>Du hast alle Aufgaben sorgfältig gelöst.</p>" +
+                "<div style='background:#f4f7f6; padding:15px; border-radius:8px; border: 2px solid #5d6d7e; margin-top:10px;'>" +
+                "Komm jetzt zum Lehrerpult und hol dir deine <b>Expertenaufgabe</b> ab!" +
                 "</div>";
             return;
         }
-        
-        qText.innerText = tasks[currentIdx].q + " =";
+        qText.innerText = tasks[currentIdx].q;
         input.value = "";
         input.focus();
-        progress.innerText = `Aufgabe ${currentIdx + 1} von 10`;
         feedback.innerText = "";
+        hintBox.style.display = "none";
+        wrongAttempts = 0;
+        fill.style.width = (currentIdx / tasks.length * 100) + "%";
     }
 
     function check() {
-        const userVal = parseInt(input.value);
-        const correctVal = tasks[currentIdx].a;
-
-        if (userVal === correctVal) {
+        const val = parseInt(input.value);
+        if (val === tasks[currentIdx].a) {
             feedback.className = "success";
-            feedback.innerText = "Hervorragend! Das ist richtig.";
+            feedback.innerText = "✓ Richtig gerechnet!";
             currentIdx++;
             btn.disabled = true;
-            setTimeout(() => {
-                btn.disabled = false;
-                loadTask();
-            }, 1200);
+            setTimeout(() => { btn.disabled = false; loadTask(); }, 1000);
         } else {
+            wrongAttempts++;
             feedback.className = "error";
-            feedback.innerText = "Leider falsch. Rechne noch einmal in Ruhe!";
+            feedback.innerText = "Nochmal prüfen... (Sperre: 3s)";
             
-            // "Bestrafung": Button für 3 Sekunden sperren
+            if (wrongAttempts >= 2) {
+                hintBox.innerText = tasks[currentIdx].h;
+                hintBox.style.display = "block";
+            }
+
             btn.disabled = true;
-            let timeLeft = 3;
+            let count = 3;
             const timer = setInterval(() => {
-                btn.innerText = `Wartezeit: ${timeLeft}s`;
-                timeLeft--;
-                if (timeLeft < 0) {
+                btn.innerText = `Warten (${count}s)`;
+                count--;
+                if(count < 0) {
                     clearInterval(timer);
                     btn.disabled = false;
-                    btn.innerText = "Ergebnis prüfen";
+                    btn.innerText = "Erneut versuchen";
                 }
             }, 1000);
         }
     }
 
     btn.onclick = check;
-
-    // Erlaubt das Drücken der Enter-Taste zum Absenden
-    input.addEventListener("keyup", function(event) {
-        if (event.key === "Enter" && !btn.disabled) {
-            check();
-        }
-    });
-
+    input.addEventListener("keyup", (e) => { if(e.key === "Enter" && !btn.disabled) check(); });
     loadTask();
 </script>
-
 </body>
 </html>
