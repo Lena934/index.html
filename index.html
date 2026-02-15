@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Mein Divisions-Labor</title>
+    <title>Mein Divisions-Labor 🔬</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
@@ -10,11 +10,12 @@
         h1 { color: #34495e; font-size: 1.6rem; margin-bottom: 0.5rem; }
         .subline { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 1.5rem; }
         .question { font-size: 2.2rem; margin: 1rem 0; color: #2c3e50; font-weight: bold; }
-        input[type="number"] { width: 140px; padding: 12px; font-size: 1.8rem; border: 2px solid #d6dbdf; border-radius: 8px; text-align: center; margin-bottom: 1rem; }
+        input[type="number"] { width: 140px; padding: 12px; font-size: 1.8rem; border: 2px solid #d6dbdf; border-radius: 8px; text-align: center; margin-bottom: 1rem; outline: none; }
+        input[type="number"]:focus { border-color: #5d6d7e; }
         #check-btn { display: block; width: 100%; padding: 15px; font-size: 1.1rem; background-color: #5d6d7e; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
-        #check-btn:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        #check-btn:hover { background-color: #44515e; }
         #feedback { margin-top: 1rem; font-weight: 500; min-height: 1.5rem; }
-        #hint-box { margin-top: 1rem; padding: 10px; background-color: #fff9c4; border-left: 5px solid #fbc02d; border-radius: 4px; display: none; font-size: 0.95rem; text-align: left; color: #5d4037; }
+        #hint-box { margin-top: 1rem; padding: 12px; background-color: #fff9c4; border-left: 5px solid #fbc02d; border-radius: 4px; display: none; font-size: 0.95rem; text-align: left; color: #5d4037; line-height: 1.4; }
         .success { color: #27ae60; }
         .error { color: #e74c3c; }
         #progress-bar { height: 8px; background: #ecf0f1; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
@@ -25,28 +26,28 @@
 
 <div id="game-container">
     <div id="progress-bar"><div id="progress-fill"></div></div>
-    <h1>Mein Divisions-Labor 🔬</h1>
+    <h1>"Mein Divisions-Labor 🔬"</h1>
     <p class="subline">Schriftliches Dividieren meistern</p>
     
     <div id="feedback"></div>
     <div class="question" id="question-text">...</div>
     <input type="number" id="user-answer" placeholder="Ergebnis" inputmode="numeric" pattern="[0-9]*">
     <button id="check-btn">Prüfen</button>
-    <div id="hint-box" id="hint-text"></div>
+    <div id="hint-box"></div>
 </div>
 
 <script>
     const tasks = [
-        { q: "815 : 5", a: 163, h: "Tipp: 8:5=1 Rest 3. Hol die 1 runter: 31:5=...?" },
-        { q: "2008 : 8", a: 251, h: "Tipp: 20:8=2 Rest 4. Hol die 0 runter: 40:8=5. Danach bleibt noch die 8!" },
-        { q: "6801 : 3", a: 2267, h: "Tipp: Gehe Stelle für Stelle vor. 6:3, dann 8:3 (Rest 2), dann 20:3, dann 21:3." },
-        { q: "4938 : 6", a: 823, h: "Tipp: 49:6=8 Rest 1. Hol die 3 runter für 13:6. Pass auf den Rest auf!" },
-        { q: "588 : 7", a: 84, h: "Tipp: Die 7 passt nicht in die 5, also rechne 58:7 zuerst." },
-        { q: "4050 : 9", a: 450, h: "Tipp: 40:9=4 Rest 4. Hol die 5 runter: 45:9=5. Vergiss die letzte Null nicht!" },
-        { q: "4926 : 6", a: 821, h: "Tipp: 49:6=8 Rest 1. Hol die 2 runter: 12:6=2. Am Ende noch 6:6." },
-        { q: "6004 : 4", a: 1501, h: "Tipp: 6:4=1 Rest 2. Hol die 0 runter: 20:4=5. Achtung: 0:4=0!" },
-        { q: "2350 : 5", a: 470, h: "Tipp: 23:5=4 Rest 3. Hol die 5 runter: 35:5=7. Die letzte Null muss auch ins Ergebnis." },
-        { q: "4488 : 8", a: 561, h: "Tipp: 44:8=5 Rest 4. Hol die 8 runter: 48:8=6. Zum Schluss noch 8:8." }
+        { q: "815 : 5", a: 163, h: "💡 <b>Tipp:</b> 8:5 = 1 Rest 3. Hol die 1 runter: 31:5 = ...?" },
+        { q: "2008 : 8", a: 251, h: "💡 <b>Tipp:</b> 20:8 = 2 Rest 4. Hol die 0 runter: 40:8 = 5. Danach bleibt noch die 8!" },
+        { q: "6801 : 3", a: 2267, h: "💡 <b>Tipp:</b> Gehe Stelle für Stelle vor. 6:3, dann 8:3 (Rest 2), dann 20:3, dann 21:3." },
+        { q: "4938 : 6", a: 823, h: "💡 <b>Tipp:</b> 49:6 = 8 Rest 1. Hol die 3 runter für 13:6. Pass auf den Rest auf!" },
+        { q: "588 : 7", a: 84, h: "💡 <b>Tipp:</b> Die 7 passt nicht in die 5, also rechne 58:7 zuerst." },
+        { q: "4050 : 9", a: 450, h: "💡 <b>Tipp:</b> 40:9 = 4 Rest 4. Hol die 5 runter: 45:9 = 5. Vergiss die letzte Null nicht!" },
+        { q: "4926 : 6", a: 821, h: "💡 <b>Tipp:</b> 49:6 = 8 Rest 1. Hol die 2 runter: 12:6 = 2. Am Ende noch 6:6." },
+        { q: "6004 : 4", a: 1501, h: "💡 <b>Tipp:</b> 6:4 = 1 Rest 2. Hol die 0 runter: 20:4 = 5. Achtung: 0:4 = 0!" },
+        { q: "2350 : 5", a: 470, h: "💡 <b>Tipp:</b> 23:5 = 4 Rest 3. Hol die 5 runter: 35:5 = 7. Die letzte Null muss auch ins Ergebnis." },
+        { q: "4488 : 8", a: 561, h: "💡 <b>Tipp:</b> 44:8 = 5 Rest 4. Hol die 8 runter: 48:8 = 6. Zum Schluss noch 8:8." }
     ];
 
     let currentIdx = 0;
@@ -88,32 +89,20 @@
         } else {
             wrongAttempts++;
             feedback.className = "error";
-            feedback.innerText = "Rechne nochmal nach";
+            feedback.innerText = "Leider falsch. Rechne noch einmal in Ruhe.";
             
             if (wrongAttempts >= 2) {
-                hintBox.innerText = tasks[currentIdx].h;
+                hintBox.innerHTML = tasks[currentIdx].h;
                 hintBox.style.display = "block";
             }
-
-            btn.disabled = true;
-            let count = 3;
-            const timer = setInterval(() => {
-                btn.innerText = `Warten (${count}s)`;
-                count--;
-                if(count < 0) {
-                    clearInterval(timer);
-                    btn.disabled = false;
-                    btn.innerText = "Erneut versuchen";
-                }
-            }, 1000);
+            // Keine Button-Sperre mehr
+            input.focus();
         }
     }
 
     btn.onclick = check;
-    input.addEventListener("keyup", (e) => { if(e.key === "Enter" && !btn.disabled) check(); });
+    input.addEventListener("keyup", (e) => { if(e.key === "Enter") check(); });
     loadTask();
 </script>
 </body>
 </html>
-
-
